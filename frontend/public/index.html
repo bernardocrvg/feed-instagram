@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Feed do Instagram da Igreja da Penha - RJ</title>
-    <!-- Nova fonte: Wix Madefor Display -->
     <link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Wix Madefor Display', sans-serif; background: #f1f5f9; color: #0f172a; padding: 30px 20px; margin: 0; }
@@ -18,18 +17,19 @@
         .config-panel { flex: 1; min-width: 320px; }
         .preview-panel { flex: 2; min-width: 400px; display: flex; flex-direction: column; }
         
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
         label { display: block; font-size: 12px; font-weight: 700; text-transform: uppercase; margin-bottom: 6px; color: #475569; }
-        input, select { width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-family: 'Wix Madefor Display', sans-serif; font-size: 14px; transition: border-color 0.2s;}
+        input, select { width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-family: inherit; font-size: 14px; transition: border-color 0.2s;}
         input:focus, select:focus { outline: none; border-color: #6366f1; }
         
-        /* Grupo de Input de Cor (Picker + HEX) */
         .color-group { display: flex; gap: 8px; }
         .color-group input[type="color"] { width: 45px; padding: 2px; cursor: pointer; height: 40px; }
         .color-group input[type="text"] { flex: 1; font-family: monospace; text-transform: uppercase; }
         
-        button { background: #6366f1; color: white; border: none; padding: 14px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; width: 100%; margin-top: 10px; transition: 0.2s; font-family: 'Wix Madefor Display', sans-serif; font-size: 15px;}
+        button { background: #6366f1; color: white; border: none; padding: 14px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; width: 100%; margin-top: 10px; transition: 0.2s; font-family: inherit; font-size: 15px;}
         button:hover { background: #4f46e5; transform: translateY(-1px); }
+        
+        .section-title { margin-top: 24px; font-size: 16px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px; margin-bottom: 16px; color: #1e293b; }
         
         #preview-iframe { width: 100%; flex: 1; border: 1px solid #e2e8f0; border-radius: 8px; background: #ffffff; min-height: 450px; }
         #code-output { width: 100%; height: 120px; margin-top: 16px; font-family: monospace; font-size: 12px; padding: 12px; background: #1e293b; color: #e2e8f0; border-radius: 8px; border: none; resize: vertical; cursor: copy; }
@@ -47,17 +47,16 @@
     </div>
 
     <div class="container">
-        <!-- Coluna Esquerda: Configurações -->
         <div class="card config-panel">
-            <h2 style="margin-top: 0; font-size: 18px; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px; margin-bottom: 20px;">Estilo e Layout</h2>
+            <h2 class="section-title" style="margin-top: 0;">Estilo e Layout</h2>
             
             <div class="grid">
                 <div>
                     <label>Tipo de Feed</label>
-                    <select id="cfg-type">
-                        <option value="fixed">Faixa (5 posts)</option>
-                        <option value="custom">Grade (Grade Simples)</option>
-                        <option value="paginated" selected>Paginado (Recomendado)</option>
+                    <select id="cfg-type" onchange="toggleUI()">
+                        <option value="fixed">Faixa (Pares)</option>
+                        <option value="custom">Grade</option>
+                        <option value="paginated" selected>Paginado</option>
                     </select>
                 </div>
                 <div>
@@ -66,14 +65,19 @@
                 </div>
             </div>
 
+            <div id="div-faixa-limit" style="display: none; margin-bottom: 16px;">
+                <label>Total de Posts na Faixa (Apenas Pares)</label>
+                <input type="number" id="cfg-faixa-posts" value="6" min="2" step="2" onchange="this.value = Math.max(2, Math.round(this.value / 2) * 2)">
+            </div>
+
             <div class="grid">
                 <div>
                     <label>Proporção da Foto</label>
                     <select id="cfg-aspect">
                         <option value="1/1">1:1 (Quadrado)</option>
-                        <option value="4/5">4:5 (Padrão Instagram)</option>
+                        <option value="4/5">4:5 (Padrão IG)</option>
                         <option value="3/4">3:4 (Retrato)</option>
-                        <option value="9/16">9:16 (Stories/Reels)</option>
+                        <option value="9/16">9:16 (Stories)</option>
                     </select>
                 </div>
                 <div>
@@ -82,12 +86,59 @@
                 </div>
             </div>
 
-            <div style="margin-bottom: 20px;">
+            <div style="margin-bottom: 16px;">
                 <label>Arredondamento das Bordas (px)</label>
                 <input type="number" id="cfg-radius" value="8">
             </div>
 
-            <h2 style="margin-top: 30px; font-size: 18px; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px; margin-bottom: 20px;">Cores</h2>
+            <h2 class="section-title">Tipografia</h2>
+            
+            <div class="grid">
+                <div>
+                    <label>Fonte da Legenda</label>
+                    <select id="cfg-font" onchange="toggleUI()">
+                        <option value="Wix Madefor Display">Wix Madefor Display</option>
+                        <option value="Montserrat">Montserrat</option>
+                        <option value="Inter">Inter</option>
+                        <option value="Poppins">Poppins</option>
+                        <option value="Roboto">Roboto</option>
+                        <option value="custom">Outra (Link)</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Peso (Espessura)</label>
+                    <select id="cfg-weight">
+                        <option value="300">Leve (300)</option>
+                        <option value="400">Normal (400)</option>
+                        <option value="500" selected>Médio (500)</option>
+                        <option value="600">Semi-Bold (600)</option>
+                        <option value="700">Negrito (700)</option>
+                        <option value="800">Extra (800)</option>
+                        <option value="900">Black (900)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="div-custom-font" class="grid" style="display: none;">
+                <div>
+                    <label>URL (Google Fonts)</label>
+                    <input type="text" id="cfg-font-url" placeholder="https://fonts.googleapis.com/css2?family=Sua+Fonte...">
+                </div>
+                <div>
+                    <label>Nome da Fonte</label>
+                    <input type="text" id="cfg-font-name" placeholder="Sua Fonte">
+                </div>
+            </div>
+
+            <div style="margin-bottom: 16px;">
+                <label>Estilo do Texto</label>
+                <select id="cfg-style">
+                    <option value="normal">Normal</option>
+                    <option value="italic">Itálico</option>
+                </select>
+            </div>
+
+            <h2 class="section-title">Cores</h2>
 
             <div class="grid">
                 <div>
@@ -98,7 +149,7 @@
                     </div>
                 </div>
                 <div>
-                    <label>Cor do Fundo (Hover)</label>
+                    <label>Fundo Escuro (Hover)</label>
                     <div class="color-group">
                         <input type="color" id="cfg-over-color" value="#000000" oninput="document.getElementById('cfg-over-text').value = this.value">
                         <input type="text" id="cfg-over-text" value="#000000" oninput="document.getElementById('cfg-over-color').value = this.value" maxlength="7">
@@ -109,11 +160,8 @@
             <button onclick="updatePreviewAndCode()">Atualizar Preview e Gerar Código</button>
         </div>
 
-        <!-- Coluna Direita: Preview e Código -->
         <div class="card preview-panel">
             <h2 style="margin-top: 0; font-size: 18px; margin-bottom: 16px;">Pré-visualização Ao Vivo</h2>
-            
-            <!-- Janela Virtual onde o feed roda -->
             <iframe id="preview-iframe"></iframe>
 
             <h2 style="margin-top: 24px; font-size: 18px; margin-bottom: 8px;">Código de Incorporação</h2>
@@ -138,57 +186,79 @@
             alert("Código copiado para a área de transferência!");
         }
 
+        function toggleUI() {
+            const type = document.getElementById('cfg-type').value;
+            const font = document.getElementById('cfg-font').value;
+            document.getElementById('div-faixa-limit').style.display = (type === 'fixed') ? 'block' : 'none';
+            document.getElementById('div-custom-font').style.display = (font === 'custom') ? 'grid' : 'none';
+        }
+
         function updatePreviewAndCode() {
+            // Layout & Configs
             const type = document.getElementById('cfg-type').value;
             const columns = document.getElementById('cfg-columns').value;
             const aspect = document.getElementById('cfg-aspect').value;
             const radius = document.getElementById('cfg-radius').value;
             const gap = document.getElementById('cfg-gap').value;
+            const limitFaixa = parseInt(document.getElementById('cfg-faixa-posts').value) || 6;
             
-            // Pega as cores pelo campo de texto HEX (permite digitação manual)
+            // Tipografia
+            const fontSelect = document.getElementById('cfg-font').value;
+            const fontWeight = document.getElementById('cfg-weight').value;
+            const fontStyle = document.getElementById('cfg-style').value;
+            let fontUrl = '';
+            let fontFamily = '';
+
+            if (fontSelect === 'custom') {
+                fontUrl = document.getElementById('cfg-font-url').value;
+                fontFamily = document.getElementById('cfg-font-name').value;
+            } else {
+                fontUrl = `https://fonts.googleapis.com/css2?family=${fontSelect.replace(/ /g, '+')}:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap`;
+                fontFamily = fontSelect;
+            }
+
+            // Cores
             const capColor = document.getElementById('cfg-cap-text').value;
             const overColor = document.getElementById('cfg-over-text').value;
             
-            // URL base dinâmica do seu GitHub Pages
+            // URLs Base
             const scriptUrl = window.location.href.replace('index.html', '').replace(/\/$/, '') + '/widget.js';
-            const totalPosts = type === 'fixed' ? 5 : (columns * 2); 
+            const totalPosts = type === 'fixed' ? limitFaixa : (columns * 2); 
             
-            // CSS gerado (agora com a fonte Wix Madefor Display e Aspect Ratio)
+            // CSS Final - Com @media query forçando 2 colunas cravadas no Mobile
             const css = `
 #instawix-wrapper { display: flex; width: 100%; justify-content: center; }
-#instawix-feed { display: grid; gap: ${gap}px; box-sizing: border-box; width: 100%; grid-template-columns: repeat(${type === 'fixed' ? 5 : columns}, 1fr); }
+#instawix-feed { display: grid; gap: ${gap}px; box-sizing: border-box; width: 100%; grid-template-columns: repeat(${type === 'fixed' ? columns : columns}, 1fr); }
 .instawix-post { width: 100%; aspect-ratio: ${aspect.replace('/', '/')}; object-fit: cover; display: block; position: relative; overflow: hidden; border-radius: ${radius}px; min-width: 50px; background: #e2e8f0; }
 .instawix-post img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease; display: block; border-radius: ${radius}px; }
 .instawix-post:hover img { transform: scale(1.05); }
 .instawix-overlay { position: absolute; inset: 0; background: ${hexToRgba(overColor, 60)}; opacity: 0; transition: opacity 0.3s; display: flex; align-items: center; justify-content: center; padding: 1rem; border-radius: ${radius}px; }
 .instawix-post:hover .instawix-overlay { opacity: 1; }
-.instawix-caption { color: ${capColor}; font-family: 'Wix Madefor Display', sans-serif; font-size: 12px; font-weight: 500; text-align: center; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; margin: 0; line-height: 1.4; }
+.instawix-caption { color: ${capColor}; font-family: '${fontFamily}', sans-serif; font-weight: ${fontWeight}; font-style: ${fontStyle}; font-size: 12px; text-align: center; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; margin: 0; line-height: 1.4; }
 .instawix-nav { display: flex; justify-content: center; gap: 10px; margin-top: 24px; width: 100%; grid-column: 1 / -1; }
-.instawix-btn { font-family: 'Wix Madefor Display', sans-serif; font-weight: 600; border-radius: 6px; padding: 8px 16px; font-size: 14px; cursor: pointer; transition: all 0.2s; border: 1px solid #cbd5e1; background: #fff; color: #0f172a; }
+.instawix-btn { font-family: '${fontFamily}', sans-serif; font-weight: 600; border-radius: 6px; padding: 8px 16px; font-size: 14px; cursor: pointer; transition: all 0.2s; border: 1px solid #cbd5e1; background: #fff; color: #0f172a; }
 .instawix-btn:not(:disabled):hover { background: #0f172a; color: #fff; border-color: #0f172a; }
 .instawix-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-.instawix-info { color: #475569; font-size: 14px; align-self: center; font-weight: 500; }
+.instawix-info { font-family: '${fontFamily}', sans-serif; color: #475569; font-size: 14px; align-self: center; font-weight: 500; }
 @media (max-width: 768px) { #instawix-feed { grid-template-columns: repeat(${Math.min(columns, 3)}, 1fr); } }
-@media (max-width: 480px) { #instawix-feed { grid-template-columns: repeat(${Math.min(columns, 2)}, 1fr); } }`;
+/* REGRA MOBILE: 2 colunas sempre! */
+@media (max-width: 480px) { #instawix-feed { grid-template-columns: repeat(2, 1fr) !important; } }`;
 
-            const html = `<!-- Widget Igreja da Penha -->
-<link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+            // HTML Gerado com a fonte dinâmica escolhida
+            const html = `<link href="${fontUrl}" rel="stylesheet">
 <div id="instawix-wrapper">
   <div id="instawix-feed" data-limit="${totalPosts}" data-type="${type}" data-per-page="10"></div>
 </div>
 <script src="${scriptUrl}" async><\/script>
 <style>${css}</style>`;
 
-            // 1. Atualiza a caixa de código
             document.getElementById('code-output').value = html;
             
-            // 2. Atualiza o Iframe (Mágica do Preview Ao Vivo)
-            // Usamos o srcdoc para renderizar o código gerado perfeitamente isolado
             const iframe = document.getElementById('preview-iframe');
             iframe.srcdoc = `
                 <html>
                 <head>
-                    <style>body { margin: 0; padding: 20px; font-family: 'Wix Madefor Display', sans-serif; }</style>
+                    <style>body { margin: 0; padding: 20px; }</style>
                 </head>
                 <body>
                     ${html}
@@ -197,8 +267,11 @@
             `;
         }
 
-        // Roda a função uma vez ao carregar a página para já iniciar com o preview pronto
-        window.onload = updatePreviewAndCode;
+        // Dá a partida
+        window.onload = function() {
+            toggleUI();
+            updatePreviewAndCode();
+        };
     </script>
 </body>
 </html>
