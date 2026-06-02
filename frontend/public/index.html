@@ -191,7 +191,6 @@
             const type = document.getElementById('cfg-type').value;
             const font = document.getElementById('cfg-font').value;
             
-            // A mágica da UX: esconde colunas se for faixa
             if (type === 'fixed') {
                 document.getElementById('div-faixa-limit').style.display = 'block';
                 document.getElementById('div-colunas').style.display = 'none';
@@ -231,11 +230,10 @@
             const scriptUrl = window.location.href.replace('index.html', '').replace(/\/$/, '') + '/widget.js';
             const totalPosts = type === 'fixed' ? limitFaixa : (columns * 2); 
             
-            // Define o número de colunas ativo (limitFaixa se for "fixed", senão usa o padrão "columns")
             const activeColumns = type === 'fixed' ? limitFaixa : columns;
             
             const css = `
-#instawix-wrapper { display: flex; width: 100%; justify-content: center; }
+#instawix-wrapper { display: flex; width: 100%; justify-content: center; text-align: center; }
 #instawix-feed { display: grid; gap: ${gap}px; box-sizing: border-box; width: 100%; grid-template-columns: repeat(${activeColumns}, 1fr); }
 .instawix-post { width: 100%; aspect-ratio: ${aspect.replace('/', '/')}; object-fit: cover; display: block; position: relative; overflow: hidden; border-radius: ${radius}px; min-width: 50px; background: #e2e8f0; }
 .instawix-post img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease; display: block; border-radius: ${radius}px; }
@@ -243,11 +241,11 @@
 .instawix-overlay { position: absolute; inset: 0; background: ${hexToRgba(overColor, 60)}; opacity: 0; transition: opacity 0.3s; display: flex; align-items: center; justify-content: center; padding: 1rem; border-radius: ${radius}px; }
 .instawix-post:hover .instawix-overlay { opacity: 1; }
 .instawix-caption { color: ${capColor}; font-family: '${fontFamily}', sans-serif; font-weight: ${fontWeight}; font-style: ${fontStyle}; font-size: 12px; text-align: center; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; margin: 0; line-height: 1.4; }
-.instawix-nav { display: flex; justify-content: center; gap: 10px; margin-top: 24px; width: 100%; grid-column: 1 / -1; }
-.instawix-btn { font-family: '${fontFamily}', sans-serif; font-weight: 600; border-radius: 6px; padding: 8px 16px; font-size: 14px; cursor: pointer; transition: all 0.2s; border: 1px solid #cbd5e1; background: #fff; color: #0f172a; }
+.instawix-nav { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px; margin-top: 24px; width: 100%; grid-column: 1 / -1; text-align: center; }
+.instawix-btn { font-family: '${fontFamily}', sans-serif; font-weight: 600; border-radius: 6px; padding: 8px 16px; font-size: 14px; cursor: pointer; transition: all 0.2s; border: 1px solid #cbd5e1; background: #fff; color: #0f172a; text-align: center; }
 .instawix-btn:not(:disabled):hover { background: #0f172a; color: #fff; border-color: #0f172a; }
 .instawix-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-.instawix-info { font-family: '${fontFamily}', sans-serif; color: #475569; font-size: 14px; align-self: center; font-weight: 500; }
+.instawix-info { font-family: '${fontFamily}', sans-serif; color: #475569; font-size: 14px; align-self: center; font-weight: 500; text-align: center; }
 @media (max-width: 768px) { #instawix-feed { grid-template-columns: repeat(${Math.min(activeColumns, 3)}, 1fr); } }
 @media (max-width: 480px) { #instawix-feed { grid-template-columns: repeat(2, 1fr) !important; } }`;
 
