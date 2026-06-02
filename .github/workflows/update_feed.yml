@@ -1,0 +1,46 @@
+name: Update Instagram Feed
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v3
+
+      - name: Configurar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Instalar requests
+        run: pip install requests
+
+      - name: Rodar script de atualização
+        env:
+          IG_TOKEN: ${{ secrets.IG_TOKEN }}
+          IG_ACCOUNT_ID: ${{ secrets.IG_ACCOUNT_ID }}
+        run: python scripts/update_feed.py
+
+      - name: Commit do JSON atualizado
+        run: |
+          git config --global user.name 'InstaWix Bot'
+          git config --global user.email 'bot@instawix.app'
+          git add frontend/public/posts.json
+          git diff --quiet && git diff --staged --quiet || git commit -m "Auto-update: Instagram Feed [skip ci]"
+          git push
+
+      - name: Publicar no GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./frontend/public # Publica a pasta raiz do HTML/JS diretamente!
+          force_orphan: true
