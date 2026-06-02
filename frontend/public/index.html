@@ -3,133 +3,202 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>InstaWix - Gerador de Feed</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <title>Feed do Instagram da Igreja da Penha - RJ</title>
+    <!-- Nova fonte: Wix Madefor Display -->
+    <link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #0f172a; padding: 40px 20px; max-width: 800px; margin: 0 auto; }
-        .card { background: white; padding: 24px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
+        body { font-family: 'Wix Madefor Display', sans-serif; background: #f1f5f9; color: #0f172a; padding: 30px 20px; margin: 0; }
+        .header { text-align: center; margin-bottom: 40px; }
+        .header h1 { margin: 0; font-size: 28px; color: #1e293b; }
+        .header p { margin: 8px 0 0; color: #64748b; font-size: 15px; }
+        
+        .container { display: flex; flex-wrap: wrap; gap: 24px; max-width: 1200px; margin: 0 auto; }
+        .card { background: white; padding: 24px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); border: 1px solid #e2e8f0; }
+        
+        .config-panel { flex: 1; min-width: 320px; }
+        .preview-panel { flex: 2; min-width: 400px; display: flex; flex-direction: column; }
+        
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
-        label { display: block; font-size: 12px; font-weight: 600; text-transform: uppercase; margin-bottom: 6px; color: #64748b; }
-        input, select { width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; }
-        button { background: #6366f1; color: white; border: none; padding: 12px 24px; border-radius: 6px; font-weight: 600; cursor: pointer; width: 100%; margin-top: 20px; transition: 0.2s; }
-        button:hover { background: #4f46e5; }
-        #code-output { width: 100%; height: 250px; margin-top: 20px; font-family: monospace; font-size: 12px; padding: 12px; background: #1e293b; color: #e2e8f0; border-radius: 6px; display: none; }
-        footer { text-align: center; margin-top: 40px; font-size: 14px; color: #64748b; }
-        footer a { color: #6366f1; text-decoration: none; font-weight: 600; }
+        label { display: block; font-size: 12px; font-weight: 700; text-transform: uppercase; margin-bottom: 6px; color: #475569; }
+        input, select { width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-family: 'Wix Madefor Display', sans-serif; font-size: 14px; transition: border-color 0.2s;}
+        input:focus, select:focus { outline: none; border-color: #6366f1; }
+        
+        /* Grupo de Input de Cor (Picker + HEX) */
+        .color-group { display: flex; gap: 8px; }
+        .color-group input[type="color"] { width: 45px; padding: 2px; cursor: pointer; height: 40px; }
+        .color-group input[type="text"] { flex: 1; font-family: monospace; text-transform: uppercase; }
+        
+        button { background: #6366f1; color: white; border: none; padding: 14px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; width: 100%; margin-top: 10px; transition: 0.2s; font-family: 'Wix Madefor Display', sans-serif; font-size: 15px;}
+        button:hover { background: #4f46e5; transform: translateY(-1px); }
+        
+        #preview-iframe { width: 100%; flex: 1; border: 1px solid #e2e8f0; border-radius: 8px; background: #ffffff; min-height: 450px; }
+        #code-output { width: 100%; height: 120px; margin-top: 16px; font-family: monospace; font-size: 12px; padding: 12px; background: #1e293b; color: #e2e8f0; border-radius: 8px; border: none; resize: vertical; cursor: copy; }
+        
+        footer { text-align: center; margin-top: 50px; font-size: 14px; color: #64748b; padding-bottom: 30px;}
+        footer a { color: #6366f1; text-decoration: none; font-weight: 700; }
+        footer a:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
 
-    <div class="card">
-        <h2>Painel de Configuração</h2>
-        <p style="color: #64748b; font-size: 14px; margin-bottom: 24px;">Configure seu widget e copie o código para o site.</p>
+    <div class="header">
+        <h1>Feed do Instagram da Igreja da Penha - RJ</h1>
+        <p>Painel de Configuração do Widget</p>
+    </div>
 
-        <div class="grid">
-            <div>
-                <label>Tipo de Feed</label>
-                <select id="cfg-type">
-                    <option value="fixed">Faixa (5 posts fixos)</option>
-                    <option value="custom">Grade</option>
-                    <option value="paginated">Paginado (Páginas)</option>
-                </select>
+    <div class="container">
+        <!-- Coluna Esquerda: Configurações -->
+        <div class="card config-panel">
+            <h2 style="margin-top: 0; font-size: 18px; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px; margin-bottom: 20px;">Estilo e Layout</h2>
+            
+            <div class="grid">
+                <div>
+                    <label>Tipo de Feed</label>
+                    <select id="cfg-type">
+                        <option value="fixed">Faixa (5 posts)</option>
+                        <option value="custom">Grade (Grade Simples)</option>
+                        <option value="paginated" selected>Paginado (Recomendado)</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Colunas (No PC)</label>
+                    <input type="number" id="cfg-columns" value="5" min="1" max="6">
+                </div>
             </div>
-            <div>
-                <label>Layout (Colunas)</label>
-                <input type="number" id="cfg-columns" value="5" min="1" max="6">
-            </div>
-        </div>
 
-        <div class="grid">
-            <div>
-                <label>Arredondamento (px)</label>
+            <div class="grid">
+                <div>
+                    <label>Proporção da Foto</label>
+                    <select id="cfg-aspect">
+                        <option value="1/1">1:1 (Quadrado)</option>
+                        <option value="4/5">4:5 (Padrão Instagram)</option>
+                        <option value="3/4">3:4 (Retrato)</option>
+                        <option value="9/16">9:16 (Stories/Reels)</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Espaçamento (Gap)</label>
+                    <input type="number" id="cfg-gap" value="12">
+                </div>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <label>Arredondamento das Bordas (px)</label>
                 <input type="number" id="cfg-radius" value="8">
             </div>
-            <div>
-                <label>Espaçamento (px)</label>
-                <input type="number" id="cfg-gap" value="12">
+
+            <h2 style="margin-top: 30px; font-size: 18px; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px; margin-bottom: 20px;">Cores</h2>
+
+            <div class="grid">
+                <div>
+                    <label>Cor da Legenda</label>
+                    <div class="color-group">
+                        <input type="color" id="cfg-cap-color" value="#ffffff" oninput="document.getElementById('cfg-cap-text').value = this.value">
+                        <input type="text" id="cfg-cap-text" value="#ffffff" oninput="document.getElementById('cfg-cap-color').value = this.value" maxlength="7">
+                    </div>
+                </div>
+                <div>
+                    <label>Cor do Fundo (Hover)</label>
+                    <div class="color-group">
+                        <input type="color" id="cfg-over-color" value="#000000" oninput="document.getElementById('cfg-over-text').value = this.value">
+                        <input type="text" id="cfg-over-text" value="#000000" oninput="document.getElementById('cfg-over-color').value = this.value" maxlength="7">
+                    </div>
+                </div>
             </div>
+
+            <button onclick="updatePreviewAndCode()">Atualizar Preview e Gerar Código</button>
         </div>
 
-        <div class="grid">
-            <div>
-                <label>Cor da Legenda</label>
-                <input type="color" id="cfg-cap-color" value="#ffffff">
-            </div>
-            <div>
-                <label>Cor do Overlay (Fundo)</label>
-                <input type="color" id="cfg-over-color" value="#000000">
-            </div>
+        <!-- Coluna Direita: Preview e Código -->
+        <div class="card preview-panel">
+            <h2 style="margin-top: 0; font-size: 18px; margin-bottom: 16px;">Pré-visualização Ao Vivo</h2>
+            
+            <!-- Janela Virtual onde o feed roda -->
+            <iframe id="preview-iframe"></iframe>
+
+            <h2 style="margin-top: 24px; font-size: 18px; margin-bottom: 8px;">Código de Incorporação</h2>
+            <p style="font-size: 12px; color: #64748b; margin-top: 0; margin-bottom: 12px;">Clique no código abaixo para copiá-lo e cole em um bloco HTML no seu site.</p>
+            <textarea id="code-output" readonly onclick="copyCode(this)"></textarea>
         </div>
-
-        <button onclick="generateCode()">Gerar Código HTML</button>
-
-        <textarea id="code-output" readonly></textarea>
     </div>
 
     <footer>
-        <p>Idealizado por <a href="https://github.com/bernardocrvg" target="_blank">bernardocrvg</a> e feito por <a href="#" target="_blank">Emergent AI</a>.</p>
+        <p>Idealizado por <a href="https://github.com/bernardocrvg" target="_blank">bernardocrvg</a> e feito por <a href="https://gemini.google.com/" target="_blank">Gemini</a>.</p>
     </footer>
 
     <script>
-        // Função para converter HEX em RGBA (Igualzinha a do React)
         function hexToRgba(hex, alpha) {
-            const r = parseInt(hex.slice(1, 3), 16);
-            const g = parseInt(hex.slice(3, 5), 16);
-            const b = parseInt(hex.slice(5, 7), 16);
-            return `rgba(${r}, ${g}, ${b}, ${alpha / 100})`;
+            let r = parseInt(hex.slice(1, 3), 16), g = parseInt(hex.slice(3, 5), 16), b = parseInt(hex.slice(5, 7), 16);
+            return isNaN(r) ? `rgba(0,0,0,${alpha/100})` : `rgba(${r}, ${g}, ${b}, ${alpha / 100})`;
         }
 
-        function generateCode() {
-            // Coleta os valores do formulário
+        function copyCode(element) {
+            element.select();
+            document.execCommand('copy');
+            alert("Código copiado para a área de transferência!");
+        }
+
+        function updatePreviewAndCode() {
             const type = document.getElementById('cfg-type').value;
             const columns = document.getElementById('cfg-columns').value;
+            const aspect = document.getElementById('cfg-aspect').value;
             const radius = document.getElementById('cfg-radius').value;
             const gap = document.getElementById('cfg-gap').value;
-            const capColor = document.getElementById('cfg-cap-color').value;
-            const overColor = document.getElementById('cfg-over-color').value;
             
+            // Pega as cores pelo campo de texto HEX (permite digitação manual)
+            const capColor = document.getElementById('cfg-cap-text').value;
+            const overColor = document.getElementById('cfg-over-text').value;
+            
+            // URL base dinâmica do seu GitHub Pages
             const scriptUrl = window.location.href.replace('index.html', '').replace(/\/$/, '') + '/widget.js';
-            const totalPosts = type === 'fixed' ? 5 : (columns * 2); // Exemplo simplificado
+            const totalPosts = type === 'fixed' ? 5 : (columns * 2); 
             
-            // A mesma string CSS de CodeGenerator.jsx
+            // CSS gerado (agora com a fonte Wix Madefor Display e Aspect Ratio)
             const css = `
 #instawix-wrapper { display: flex; width: 100%; justify-content: center; }
 #instawix-feed { display: grid; gap: ${gap}px; box-sizing: border-box; width: 100%; grid-template-columns: repeat(${type === 'fixed' ? 5 : columns}, 1fr); }
-.instawix-post { width: 100%; aspect-ratio: 1/1; object-fit: cover; display: block; position: relative; overflow: hidden; border-radius: ${radius}px; min-width: 50px; }
-.instawix-post img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; display: block; border-radius: ${radius}px; }
+.instawix-post { width: 100%; aspect-ratio: ${aspect.replace('/', '/')}; object-fit: cover; display: block; position: relative; overflow: hidden; border-radius: ${radius}px; min-width: 50px; background: #e2e8f0; }
+.instawix-post img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease; display: block; border-radius: ${radius}px; }
 .instawix-post:hover img { transform: scale(1.05); }
-.instawix-overlay { position: absolute; inset: 0; background: ${hexToRgba(overColor, 50)}; opacity: 0; transition: opacity 0.3s; display: flex; align-items: center; justify-content: center; padding: 1rem; border-radius: ${radius}px; }
+.instawix-overlay { position: absolute; inset: 0; background: ${hexToRgba(overColor, 60)}; opacity: 0; transition: opacity 0.3s; display: flex; align-items: center; justify-content: center; padding: 1rem; border-radius: ${radius}px; }
 .instawix-post:hover .instawix-overlay { opacity: 1; }
-.instawix-caption { color: ${capColor}; font-family: 'Inter', sans-serif; font-size: 12px; text-align: center; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; margin: 0; }
-.instawix-nav { display: flex; justify-content: center; gap: 10px; margin-top: 20px; width: 100%; grid-column: 1 / -1; }
-.instawix-btn { font-family: 'Inter', sans-serif; border-radius: 4px; padding: 8px 16px; font-size: 14px; cursor: pointer; transition: all 0.2s; border: 1px solid #e5e5e5; background: #fff; color: #333; }
-.instawix-btn:not(:disabled):hover { background: #000; color: #fff; border-color: #000; }
-.instawix-btn:disabled { opacity: 0.5; cursor: default; }
-.instawix-info { color: #666; font-size: 14px; align-self: center; }
+.instawix-caption { color: ${capColor}; font-family: 'Wix Madefor Display', sans-serif; font-size: 12px; font-weight: 500; text-align: center; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; margin: 0; line-height: 1.4; }
+.instawix-nav { display: flex; justify-content: center; gap: 10px; margin-top: 24px; width: 100%; grid-column: 1 / -1; }
+.instawix-btn { font-family: 'Wix Madefor Display', sans-serif; font-weight: 600; border-radius: 6px; padding: 8px 16px; font-size: 14px; cursor: pointer; transition: all 0.2s; border: 1px solid #cbd5e1; background: #fff; color: #0f172a; }
+.instawix-btn:not(:disabled):hover { background: #0f172a; color: #fff; border-color: #0f172a; }
+.instawix-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.instawix-info { color: #475569; font-size: 14px; align-self: center; font-weight: 500; }
 @media (max-width: 768px) { #instawix-feed { grid-template-columns: repeat(${Math.min(columns, 3)}, 1fr); } }
 @media (max-width: 480px) { #instawix-feed { grid-template-columns: repeat(${Math.min(columns, 2)}, 1fr); } }`;
 
-            const html = `<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+            const html = `<!-- Widget Igreja da Penha -->
+<link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
 <div id="instawix-wrapper">
-  <div 
-    id="instawix-feed" 
-    data-limit="${totalPosts}"
-    data-type="${type}"
-    data-per-page="10"
-  ></div>
+  <div id="instawix-feed" data-limit="${totalPosts}" data-type="${type}" data-per-page="10"></div>
 </div>
 <script src="${scriptUrl}" async><\/script>
-<style>${css}</style>
-`;
+<style>${css}</style>`;
 
-            const output = document.getElementById('code-output');
-            output.value = html;
-            output.style.display = 'block';
+            // 1. Atualiza a caixa de código
+            document.getElementById('code-output').value = html;
             
-            // Copia automaticamente
-            navigator.clipboard.writeText(html);
-            alert("Código copiado para a área de transferência! Cole no seu site.");
+            // 2. Atualiza o Iframe (Mágica do Preview Ao Vivo)
+            // Usamos o srcdoc para renderizar o código gerado perfeitamente isolado
+            const iframe = document.getElementById('preview-iframe');
+            iframe.srcdoc = `
+                <html>
+                <head>
+                    <style>body { margin: 0; padding: 20px; font-family: 'Wix Madefor Display', sans-serif; }</style>
+                </head>
+                <body>
+                    ${html}
+                </body>
+                </html>
+            `;
         }
+
+        // Roda a função uma vez ao carregar a página para já iniciar com o preview pronto
+        window.onload = updatePreviewAndCode;
     </script>
 </body>
 </html>
