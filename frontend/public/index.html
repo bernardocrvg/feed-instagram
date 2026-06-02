@@ -59,7 +59,8 @@
                         <option value="paginated" selected>Paginado</option>
                     </select>
                 </div>
-                <div>
+                
+                <div id="div-colunas">
                     <label>Colunas (No PC)</label>
                     <input type="number" id="cfg-columns" value="5" min="1" max="6">
                 </div>
@@ -122,7 +123,7 @@
             <div id="div-custom-font" class="grid" style="display: none;">
                 <div>
                     <label>URL (Google Fonts)</label>
-                    <input type="text" id="cfg-font-url" placeholder="https://fonts.googleapis.com/css2?family=Sua+Fonte...">
+                    <input type="text" id="cfg-font-url" placeholder="https://fonts.googleapis.com/css2?family=...">
                 </div>
                 <div>
                     <label>Nome da Fonte</label>
@@ -189,12 +190,20 @@
         function toggleUI() {
             const type = document.getElementById('cfg-type').value;
             const font = document.getElementById('cfg-font').value;
-            document.getElementById('div-faixa-limit').style.display = (type === 'fixed') ? 'block' : 'none';
+            
+            // A mágica da UX: esconde colunas se for faixa
+            if (type === 'fixed') {
+                document.getElementById('div-faixa-limit').style.display = 'block';
+                document.getElementById('div-colunas').style.display = 'none';
+            } else {
+                document.getElementById('div-faixa-limit').style.display = 'none';
+                document.getElementById('div-colunas').style.display = 'block';
+            }
+
             document.getElementById('div-custom-font').style.display = (font === 'custom') ? 'grid' : 'none';
         }
 
         function updatePreviewAndCode() {
-            // Layout & Configs
             const type = document.getElementById('cfg-type').value;
             const columns = document.getElementById('cfg-columns').value;
             const aspect = document.getElementById('cfg-aspect').value;
@@ -202,7 +211,6 @@
             const gap = document.getElementById('cfg-gap').value;
             const limitFaixa = parseInt(document.getElementById('cfg-faixa-posts').value) || 6;
             
-            // Tipografia
             const fontSelect = document.getElementById('cfg-font').value;
             const fontWeight = document.getElementById('cfg-weight').value;
             const fontStyle = document.getElementById('cfg-style').value;
@@ -217,18 +225,18 @@
                 fontFamily = fontSelect;
             }
 
-            // Cores
             const capColor = document.getElementById('cfg-cap-text').value;
             const overColor = document.getElementById('cfg-over-text').value;
             
-            // URLs Base
             const scriptUrl = window.location.href.replace('index.html', '').replace(/\/$/, '') + '/widget.js';
             const totalPosts = type === 'fixed' ? limitFaixa : (columns * 2); 
             
-            // CSS Final - Com @media query forçando 2 colunas cravadas no Mobile
+            // Define o número de colunas ativo (limitFaixa se for "fixed", senão usa o padrão "columns")
+            const activeColumns = type === 'fixed' ? limitFaixa : columns;
+            
             const css = `
 #instawix-wrapper { display: flex; width: 100%; justify-content: center; }
-#instawix-feed { display: grid; gap: ${gap}px; box-sizing: border-box; width: 100%; grid-template-columns: repeat(${type === 'fixed' ? columns : columns}, 1fr); }
+#instawix-feed { display: grid; gap: ${gap}px; box-sizing: border-box; width: 100%; grid-template-columns: repeat(${activeColumns}, 1fr); }
 .instawix-post { width: 100%; aspect-ratio: ${aspect.replace('/', '/')}; object-fit: cover; display: block; position: relative; overflow: hidden; border-radius: ${radius}px; min-width: 50px; background: #e2e8f0; }
 .instawix-post img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease; display: block; border-radius: ${radius}px; }
 .instawix-post:hover img { transform: scale(1.05); }
@@ -240,11 +248,9 @@
 .instawix-btn:not(:disabled):hover { background: #0f172a; color: #fff; border-color: #0f172a; }
 .instawix-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 .instawix-info { font-family: '${fontFamily}', sans-serif; color: #475569; font-size: 14px; align-self: center; font-weight: 500; }
-@media (max-width: 768px) { #instawix-feed { grid-template-columns: repeat(${Math.min(columns, 3)}, 1fr); } }
-/* REGRA MOBILE: 2 colunas sempre! */
+@media (max-width: 768px) { #instawix-feed { grid-template-columns: repeat(${Math.min(activeColumns, 3)}, 1fr); } }
 @media (max-width: 480px) { #instawix-feed { grid-template-columns: repeat(2, 1fr) !important; } }`;
 
-            // HTML Gerado com a fonte dinâmica escolhida
             const html = `<link href="${fontUrl}" rel="stylesheet">
 <div id="instawix-wrapper">
   <div id="instawix-feed" data-limit="${totalPosts}" data-type="${type}" data-per-page="10"></div>
@@ -267,7 +273,6 @@
             `;
         }
 
-        // Dá a partida
         window.onload = function() {
             toggleUI();
             updatePreviewAndCode();
