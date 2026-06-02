@@ -1,55 +1,156 @@
+/* Configuração Base */
 body {
-    font-family: Arial, sans-serif;
-    padding: 20px;
-    background-color: #f9f9f9;
+    font-family: 'Inter', sans-serif;
+    padding: 40px 20px;
+    background-color: #ffffff; /* Fundo limpo como o antigo */
+    color: #1a1a1a;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: #111827; /* Dark Slate */
+}
+
+.divider {
+    border: 0;
+    height: 1px;
+    background-color: #e5e7eb;
+    margin: 40px 0;
+}
+
+/* O Grid idêntico ao antigo (5 colunas e gap de 12px) */
 .grid-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    margin-bottom: 30px;
-}
-
-.post-card {
-    background: #fff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    width: 200px; /* Tamanho fixo para cada cartão */
-    padding: 10px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-.post-card img {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
     width: 100%;
-    aspect-ratio: 1 / 1; /* Mantém as imagens quadradas */
-    object-fit: cover;
-    border-radius: 4px;
 }
 
-.caption {
-    font-size: 13px;
-    color: #444;
-    margin-top: 10px;
-}
-
-.pagination {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    margin-top: 20px;
-}
-
-button {
-    padding: 8px 16px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
+/* O Cartão da Foto */
+.post-card {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    background-color: #f3f4f6; /* bg-muted */
+    aspect-ratio: 1 / 1;
+    border-radius: 0px; /* Como estava no config base */
     cursor: pointer;
 }
 
+/* A Imagem com efeito de Zoom */
+.post-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.post-card:hover .post-image {
+    transform: scale(1.1); /* group-hover:scale-110 */
+}
+
+/* O Overlay Preto com Transparência */
+.post-overlay {
+    position: absolute;
+    top: 0; right: 0; bottom: 0; left: 0;
+    background-color: rgba(0, 0, 0, 0.5); /* overlayColor e overlayOpacity */
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+
+.post-card:hover .post-overlay {
+    opacity: 1; /* group-hover:opacity-100 */
+}
+
+/* A Legenda */
+.post-caption {
+    color: #ffffff; /* captionColor */
+    font-size: 0.75rem; /* text-xs */
+    font-weight: 500;
+    text-align: center;
+    margin-top: 8px;
+    
+    /* Efeito de cortar o texto em 3 linhas (line-clamp-3) */
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Paginação - O Jogo de Cores Invertidas no Hover */
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid #e5e7eb;
+}
+
+button {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    border-radius: 4px;
+    padding: 8px 16px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+/* Botão Anterior */
+#btn-prev {
+    color: #333333;
+    background-color: #ffffff;
+    border: 1px solid #e5e5e5;
+}
+
+#btn-prev:hover:not(:disabled) {
+    color: #ffffff;
+    background-color: #000000;
+    border-color: #000000;
+}
+
+/* Botão Próximo */
+#btn-next {
+    color: #ffffff;
+    background-color: #000000;
+    border: 1px solid #000000;
+}
+
+#btn-next:hover:not(:disabled) {
+    color: #333333;
+    background-color: #ffffff;
+    border-color: #e5e5e5;
+}
+
+/* Botões Desabilitados */
 button:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
+    opacity: 0.5;
+    cursor: default;
+}
+
+#page-info {
+    color: #666666;
+    font-size: 14px;
+}
+
+/* Responsividade: para telas menores, reduz o número de colunas */
+@media (max-width: 1024px) {
+    .grid-container { grid-template-columns: repeat(4, 1fr); }
+}
+@media (max-width: 768px) {
+    .grid-container { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 480px) {
+    .grid-container { grid-template-columns: repeat(2, 1fr); }
 }
