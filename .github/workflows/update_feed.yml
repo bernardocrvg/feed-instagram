@@ -1,6 +1,11 @@
 name: Update Instagram Feed
 
 on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'frontend/public/posts.json' # Evita o looping infinito quando o bot atualiza o JSON
   schedule:
     - cron: '*/30 * * * *'
   workflow_dispatch:
