@@ -36,19 +36,34 @@ def get_instagram_posts():
 
 def fetch_media(ig_user_id):
     print(f"Buscando posts para o ID: {ig_user_id}...")
-    media_url = f"https://graph.facebook.com/v18.0/{ig_user_id}/media?fields=id,caption,media_type,media_url,permalink,thumbnail_url,timestamp,username&access_token={TOKEN}&limit=100"
+    base_url = f"https://graph.facebook.com/v18.0/{ig_user_id}/media?fields=id,caption,media_type,media_url,permalink,thumbnail_url,timestamp,username&access_token={TOKEN}&limit=100"
+    
+    all_raw_posts = []
+    current_url = base_url
     
     try:
-        response = requests.get(media_url)
-        data = response.json()
-        
-        if "error" in data:
-            print(f"ERRO ao buscar mídia: {data['error']['message']}")
-            return []
+        while current_url:
+            response = requests.get(current_url)
+            data = response.json()
             
-        posts = process_posts(data.get("data", []))
-        print(f"Sucesso! {len(posts)} posts filtrados encontrados.")
+            if "error" in data:
+                print(f"ERRO ao buscar mídia: {data['error']['message']}")
+                break
+                
+            # Adiciona os posts da página atual na lista total
+            all_raw_posts.extend(data.get("data", []))
+            
+            # Verifica se tem uma próxima página. Se não tiver, o current_url vira None e o laço while acaba.
+            current_url = data.get("paging", {}).get("next")
+            
+        print(f"Varredura completa: {len(all_raw_posts)} posts encontrados no perfil inteiro. Filtrando a hashtag...")
+        
+        # Agora sim, passa o funil em absolutamente todos os posts
+        posts = process_posts(all_raw_posts)
+        
+        print(f"Sucesso! {len(posts)} posts filtrados encontrados com a hashtag.")
         return posts
+        
     except Exception as e:
         print(f"Erro de conexão: {str(e)}")
         return []
